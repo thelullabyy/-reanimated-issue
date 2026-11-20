@@ -59,3 +59,22 @@ Frames sampled at half-second intervals from the recording:
 These are screenshot pixels in a 1170 × 2532 recording, not React Native
 layout points. The fixed position and changing color show that only the
 descendant's movement stops; the parent's opacity continues to animate.
+
+## Local experimental fix
+
+An opt-in native patch is available in [patches/](patches/README.md), with a
+[patched iOS recording](evidence/ios-patched.mp4). It fixes the original position
+animation reproduction on iOS. Hierarchy-changing animations, including some
+`zIndex` changes, still require further work; see the documented limitations.
+
+```sh
+npm run patch:reanimated
+npx expo run:ios
+```
+
+Use a custom native build to test the fix. `npm run ios` starts Expo Go, whose
+prebuilt Reanimated binary cannot load this C++ patch. `npm run patch:revert`
+removes the patch; rebuild the native app to return to the baseline. `npm ci`
+also restores the unpatched dependency. No automatic postinstall patching runs.
+
+Run `npm run test:patch` to check safe installation and reversal.
